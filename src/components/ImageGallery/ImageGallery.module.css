@@ -1,0 +1,16 @@
+.galleryList {
+  display: grid;
+  align-content: center;
+  grid-template-columns: 360px 360px 360px 360px;
+  background: #fff;
+  gap: 8px;
+}
+
+.galleryItem {
+  width: 350px;
+  height: 192px;
+}
+
+li {
+  display: inline-block;
+}

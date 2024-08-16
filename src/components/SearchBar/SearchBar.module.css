@@ -1,0 +1,17 @@
+.form {
+  container: sidebar / inline-size;
+  display: flex;
+  background-color: rgb(115, 117, 167);
+  gap: 12px;
+  justify-content: center;
+}
+
+.input {
+  font: inherit;
+  display: flex;
+  margin: 6px;
+}
+
+.searchBtn {
+  margin: 6px;
+}
