@@ -1,12 +1,17 @@
 import ImageCard from "../../ImageCard/ImageCard";
 import css from "./ImageGallery.module.css";
+import { ImageCardType } from "../../ImageCard/ImageCard.types";
+import { MutableRefObject } from "react";
 
-export default function ImageGallery({
-  items,
-  onItemClick,
-  galleryRef,
-  handleImageLoaded,
-}) {
+type ImageGalleryProps = {
+  items: ImageCardType[];
+  onItemClick: (item: ImageCardType) => void;
+  galleryRef: MutableRefObject<HTMLUListElement | null>;
+  handleImageLoaded: (item: ImageCardType) => void;
+};
+
+export default function ImageGallery(props: ImageGalleryProps) {
+  const { items, onItemClick, galleryRef, handleImageLoaded } = props;
   return (
     <ul className={css.galleryList} ref={galleryRef}>
       {items.map((item) => (

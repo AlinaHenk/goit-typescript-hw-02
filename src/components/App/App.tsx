@@ -1,27 +1,28 @@
 import { useEffect, useState, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import SearchBar from "../SearchBar/SearchBar";
-import ImageGallery from "..//ImageGallery/ImageGallery";
-import Loader from "..//Loader/Loader";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import css from "./App.module.css";
 import { fetchGallery } from "../../images-api";
-import ImageModal from "..//ImageModal/ImageModal";
+import ImageModal from "../ImageModal/ImageModal";
+import { ImageCardType } from "../../ImageCard/ImageCard.types";
 
 export default function App() {
-  const [galleries, setGalleries] = useState([]);
+  const [galleries, setGalleries] = useState<ImageCardType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
   const [gallery, setGallery] = useState("");
   const [totalPages, setTotalPages] = useState(999);
-  const [clickedItem, setClickedItem] = useState();
+  const [clickedItem, setClickedItem] = useState<ImageCardType>();
   const [showModal, setShowModal] = useState(false);
-  const appRef = useRef();
-  const galleryRef = useRef();
+  const appRef = useRef<HTMLDivElement | null>(null);
+  const galleryRef = useRef<HTMLUListElement | null>(null);
 
-  const handleSearch = async (newGallery) => {
+  const handleSearch = async (newGallery: string) => {
     if (newGallery === "") {
       toast.error("You need to fill in text for search images");
       return;
@@ -35,20 +36,22 @@ export default function App() {
     setPage(page + 1);
   };
 
-  function onShowModal(item) {
+  function onShowModal(item: ImageCardType) {
     setClickedItem(item);
     setShowModal(true);
   }
 
-  function handleImageLoaded(item) {
+  function handleImageLoaded(item: ImageCardType) {
     item.loaded = true;
     const notLoadedItems = galleries.filter(
-      (galleryItem) => !galleryItem.loaded
+      (galleryItem: ImageCardType) => !galleryItem.loaded
     );
     if (notLoadedItems.length == 0) {
-      const elem = galleryRef.current;
-      const rect = elem.getBoundingClientRect();
-      window.scrollTo({ top: rect.height, behavior: "smooth" });
+      const elem: HTMLElement | null = galleryRef.current;
+      if (elem && "getBoundingClientRect" in elem) {
+        const rect = elem.getBoundingClientRect();
+        window.scrollTo({ top: rect.height, behavior: "smooth" });
+      }
     }
   }
 
@@ -63,7 +66,7 @@ export default function App() {
         setError(false);
         const data = await fetchGallery(gallery, page);
         setTotalPages(data.data.total_pages);
-        setGalleries((galleries) => {
+        setGalleries((galleries: ImageCardType[]) => {
           return [...galleries, ...data.data.results];
         });
       } catch (error) {
@@ -76,7 +79,7 @@ export default function App() {
   }, [page, gallery]);
 
   return (
-    <div className={css.container} ref={appRef}>
+    <div ref={appRef}>
       <SearchBar onSearch={handleSearch} />
       <Toaster position="top-left" reverseOrder={false} />
       {error && <ErrorMessage />}
@@ -88,7 +91,7 @@ export default function App() {
           handleImageLoaded={handleImageLoaded}
         />
       )}
-      {showModal && clickedItem && (
+      {showModal && clickedItem && appRef && (
         <ImageModal
           item={clickedItem}
           appRef={appRef}

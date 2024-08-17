@@ -1,7 +1,12 @@
 import { Field, Form, Formik } from "formik";
 import css from "./SearchBar.module.css";
 
-export default function SearchBar({ onSearch }) {
+type SearchBarProps = {
+  onSearch: (newGallery: string) => void;
+};
+
+export default function SearchBar(props: SearchBarProps) {
+  const { onSearch } = props;
   return (
     <Formik
       initialValues={{ image: "" }}
